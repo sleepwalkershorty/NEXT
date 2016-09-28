@@ -1,0 +1,170 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.nrg.next.ActivityStart"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:id="@+id/ControlsLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:background="#06345B" >
+
+        <Button
+            android:id="@+id/bLogin"
+            style="?android:attr/buttonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Login"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/SMS_Border"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_above="@+id/ControlsLay"
+        android:layout_alignParentLeft="true"
+        android:background="#33B5E5" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerInParent="true"
+        android:orientation="vertical" >
+
+        <View
+            android:id="@+id/ActExpert_Line3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="#33B5E5" />
+
+        <TextView
+            android:id="@+id/playerEntry_tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="#06345B"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center_horizontal|center_vertical"
+            android:padding="2dp"
+            android:text="Nickname:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <View
+            android:id="@+id/View01"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="#33B5E5" />
+
+        <EditText
+            android:id="@+id/eNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center_vertical|center_horizontal"
+            android:hint="Nickname"
+            android:imeOptions="actionNext|flagNoFullscreen"
+            android:inputType="textPersonName"
+            android:maxEms="8"
+            android:maxLength="15"
+            android:minEms="8"
+            android:textAppearance="?android:attr/textAppearanceLarge" >
+
+            <requestFocus />
+        </EditText>
+
+        <View
+            android:id="@+id/View02"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="10dp"
+            android:background="#33B5E5" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="#06345B"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center_horizontal|center_vertical"
+            android:padding="2dp"
+            android:text="Passwort:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <View
+            android:id="@+id/View03"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:background="#33B5E5" />
+
+        <EditText
+            android:id="@+id/ePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center_vertical|center_horizontal"
+            android:hint="Passwort"
+            android:imeOptions="actionDone|flagNoFullscreen"
+            android:inputType="textPassword"
+            android:maxEms="8"
+            android:maxLength="15"
+            android:minEms="8"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/bRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Registrieren"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Geocoder" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:text="Upload" />
+
+</RelativeLayout>
