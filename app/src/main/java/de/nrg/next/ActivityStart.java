@@ -121,15 +121,16 @@ public class ActivityStart extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				if (eNickname.getText().length() >= 3 && ePasswort.getText().length() >= 3)
-				{
-//					if (Utils.checkNetworkStatus(ctx))
-						new LoginTask(eNickname.getText().toString(), ePasswort.getText().toString()).execute((Void) null);
-//					else
-//						Toast.makeText(ctx, "Keine Internetverbindung!", Toast.LENGTH_SHORT).show();
-				}
-				else
-					Toast.makeText(ctx, "Nickname und Passwort müssen mind. 3 Zeichen lang sein!", Toast.LENGTH_LONG).show();
+				new HighscoreTask("Rüdiger", "Huawei", "18161691", 32, 1).execute((Void) null);
+//				if (eNickname.getText().length() >= 3 && ePasswort.getText().length() >= 3)
+//				{
+////					if (Utils.checkNetworkStatus(ctx))
+//						new LoginTask(eNickname.getText().toString(), ePasswort.getText().toString()).execute((Void) null);
+////					else
+////						Toast.makeText(ctx, "Keine Internetverbindung!", Toast.LENGTH_SHORT).show();
+//				}
+//				else
+//					Toast.makeText(ctx, "Nickname und Passwort müssen mind. 3 Zeichen lang sein!", Toast.LENGTH_LONG).show();
 			}
 		});
 		
@@ -759,6 +760,103 @@ public class ActivityStart extends Activity {
 				asyncDialog.dismiss();
 			super.onPostExecute(result);
 			
+			try {
+				if (userdata != null && userdata.getInt("success") == 1)
+				{
+					Toast.makeText(ctx, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
+				}
+				else
+					Toast.makeText(ctx, "Registrierung war nicht erfolgreich!", Toast.LENGTH_SHORT).show();
+			} catch (JSONException e) {
+				e.printStackTrace();
+				Toast.makeText(ctx, "Registrierung war nicht erfolgreich!", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	private class HighscoreTask extends AsyncTask<Void, Void, Void>
+	{
+		private ProgressDialog asyncDialog = new ProgressDialog(ctx);
+		private String name, device, imei;
+		private int country, gender;
+
+		public HighscoreTask(String name, String device, String imei, int country, int gender)
+		{
+			this.name = name;
+			this.device = device;
+			this.imei = imei;
+			this.country = country;
+			this.gender = gender;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+			asyncDialog.setCancelable(false);
+			asyncDialog.setMessage("Verbindung zum Server aufbauen ...");
+			asyncDialog.setTitle("Upload");
+			asyncDialog.setIcon(android.R.drawable.ic_dialog_info);
+			asyncDialog.show();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... paramsX)
+		{
+			userdata = null;
+			URL url;
+			try {
+				url = new URL("http://192.168.2.213:12345/db_insert.php");
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+				con.setReadTimeout(10000);
+				con.setConnectTimeout(15000);
+				con.setRequestMethod("POST");
+				con.setDoInput(true);
+				con.setDoOutput(true);
+
+				ArrayList<Pair<String, String>> params = new ArrayList<Pair<String,String>>(1);
+				params.add(new Pair<String, String>("name",name));
+				params.add(new Pair<String, String>("device",device));
+				params.add(new Pair<String, String>("imei",imei));
+				params.add(new Pair<String, String>("country",String.valueOf(country)));
+				params.add(new Pair<String, String>("gender",String.valueOf(gender)));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), "UTF-8"));
+
+				writer.write(getQuery(params));
+				writer.flush();
+				writer.close();
+
+				int responseCode = con.getResponseCode();
+				if (responseCode == HttpsURLConnection.HTTP_OK)
+				{
+					String response = "";
+					String line;
+					BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+					while ((line = reader.readLine()) != null)
+						response += line;
+
+					try {
+						userdata = new JSONObject(response);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			if (asyncDialog != null && asyncDialog.isShowing())
+				asyncDialog.dismiss();
+			super.onPostExecute(result);
+
 			try {
 				if (userdata != null && userdata.getInt("success") == 1)
 				{
