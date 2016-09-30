@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +41,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -50,12 +52,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static android.R.attr.country;
+
 public class ActivityStart extends Activity {
 
 	private static TextView messageText;
 	private static EditText eNickname, ePasswort;
 	private static Context ctx;
 	private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1001;
+	private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1002;
 
 	private static String uploadFilePath = "/storage/sdcard/DCIM/Camera/";
 	private static String uploadFileName = "IMG_20160519_030506.jpg";
@@ -90,6 +95,22 @@ public class ActivityStart extends Activity {
                 // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
                 // app-defined int constant
             }
+
+			if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+					!= PackageManager.PERMISSION_GRANTED) {
+
+				// Should we show an explanation?
+				if (shouldShowRequestPermissionRationale(
+						Manifest.permission.READ_PHONE_STATE)) {
+					// Explain to the user why we need to read the contacts
+				}
+
+				requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
+						MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+
+				// MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+				// app-defined int constant
+			}
 		}
 
 		messageText = (TextView) findViewById(R.id.textView1);
@@ -121,7 +142,12 @@ public class ActivityStart extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				new HighscoreTask("Rüdiger", "Huawei", "18161691", 32, 1).execute((Void) null);
+				String device = Build.MANUFACTURER + ", " + Build.MODEL;
+				TelephonyManager man = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
+				String imei = man.getDeviceId();
+				int country = 25;
+				int gender = 1;
+				new HighscoreTask(eNickname.getText().toString(), device, imei, country, gender).execute((Void) null);
 //				if (eNickname.getText().length() >= 3 && ePasswort.getText().length() >= 3)
 //				{
 ////					if (Utils.checkNetworkStatus(ctx))
@@ -779,6 +805,7 @@ public class ActivityStart extends Activity {
 		private ProgressDialog asyncDialog = new ProgressDialog(ctx);
 		private String name, device, imei;
 		private int country, gender;
+		private JSONObject json_highscores;
 
 		public HighscoreTask(String name, String device, String imei, int country, int gender)
 		{
@@ -803,7 +830,7 @@ public class ActivityStart extends Activity {
 		@Override
 		protected Void doInBackground(Void... paramsX)
 		{
-			userdata = null;
+			json_highscores = null;
 			URL url;
 			try {
 				url = new URL("http://192.168.2.213:12345/db_insert.php");
@@ -837,7 +864,7 @@ public class ActivityStart extends Activity {
 						response += line;
 
 					try {
-						userdata = new JSONObject(response);
+						json_highscores = new JSONObject(response);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -858,15 +885,20 @@ public class ActivityStart extends Activity {
 			super.onPostExecute(result);
 
 			try {
-				if (userdata != null && userdata.getInt("success") == 1)
+				if (json_highscores != null)
 				{
-					Toast.makeText(ctx, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show();
+                    String username = "";
+                    JSONArray array = json_highscores.getJSONArray("highscores");
+                    for (int i=0;i<array.length();i++)
+                    {
+                        JSONObject highscore = array.getJSONObject(i);
+                        JSONObject hObject = highscore.getJSONObject("highscore");
+                        username = hObject.getString("name");
+                    }
+					Toast.makeText(ctx, username, Toast.LENGTH_SHORT).show();
 				}
-				else
-					Toast.makeText(ctx, "Registrierung war nicht erfolgreich!", Toast.LENGTH_SHORT).show();
 			} catch (JSONException e) {
 				e.printStackTrace();
-				Toast.makeText(ctx, "Registrierung war nicht erfolgreich!", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
